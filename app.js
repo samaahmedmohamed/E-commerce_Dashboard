@@ -1,0 +1,30 @@
+const express = require("express");
+const app = express();
+app.use(express.json());
+const signupRouter = require("./Routes/userRoutes");
+const loginRouter = require("./Routes/loginRoutes");
+const createUser = require("./Routes/usersRouter");
+const getAllUsers = require("./Routes/usersRouter");
+const getUser = require("./Routes/usersRouter");
+const updateUser = require("./Routes/usersRouter");
+const deleteUser = require("./Routes/usersRouter");
+
+const getAllProduct = require("./Routes/productRoutes");
+const getProduct = require("./Routes/productRoutes");
+const createProduct = require("./Routes/productRoutes");
+const updateProduct = require("./Routes/productRoutes");
+const deleteProduct = require("./Routes/productRoutes");
+app.use("/signup", signupRouter);
+app.use("/login", loginRouter);
+app.use("/creatUser", createUser);
+app.use("/getAllUsers", getAllUsers);
+app.use("/getuser", getUser);
+app.use("/updateUser", updateUser);
+app.use("/deleteUser", deleteUser);
+app.use("/getAllProduct", getAllProduct);
+app.use("/getProduct", getProduct);
+app.use("/createProduct", createProduct);
+app.use("/updateProduct", updateProduct);
+app.use("/deleteProduct", deleteProduct);
+
+module.exports = app;
