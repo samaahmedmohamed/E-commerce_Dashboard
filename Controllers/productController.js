@@ -82,7 +82,9 @@ const getProduct = catchAsync(async (req, res, next) => {
 });
 
 const createProduct = catchAsync(async (req, res, next) => {
-  const exsitingProduct = productModel.findOne({ name: req.body.name });
+  // console.log(req.body.name);
+  const exsitingProduct = await productModel.findOne({ name: req.body.name });
+  console.log(exsitingProduct);
   if (exsitingProduct) {
     res.status(400).json({
       status: "fail",
@@ -113,7 +115,8 @@ const updateProduct = catchAsync(async (req, res, next) => {
 });
 
 const deleteProduct = catchAsync(async (req, res, next) => {
-  const deletedProduct = await productModel.findByIdAndUpdate(req.body.id, {
+  console.log(req.params.id);
+  const deletedProduct = await productModel.findByIdAndUpdate(req.params.id, {
     isDeleted: true,
     new: true,
   });
