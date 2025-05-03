@@ -1,3 +1,4 @@
+
 const mongoose = require("mongoose");
 
 const orderModel = new mongoose.Schema(
@@ -13,6 +14,7 @@ const orderModel = new mongoose.Schema(
         quantity: { type: Number, default: 1 },
         totalPrice: Number,
         size: String,
+        color:String
       },
     ],
     totalPrice: Number,

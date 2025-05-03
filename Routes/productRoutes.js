@@ -14,7 +14,7 @@ const {
 
 router.get("/", getAllProduct);
 router.get("/:id", getProduct);
-router.post("/",productMiddelWares,upload.array("images", 5), createProduct);
+router.post("/",upload.array("images", 5),productMiddelWares, createProduct);
 router.patch("/:id", productMiddelWares,updateProduct);
 router.delete("/:id", deleteProduct);
 
