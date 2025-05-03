@@ -5,6 +5,7 @@ const bcrypt = require("bcrypt");
 let salt = bcrypt.genSaltSync(10);
 
 const createUser = catchAsync(async (req, res) => {
+
   const passHashed = await bcrypt.hash(req.body.password, salt);
 
   // const user = req.body;
