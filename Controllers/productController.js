@@ -1,3 +1,4 @@
+const { path } = require("../app");
 const productModel = require("../Models/productModel");
 const catchAsync = require("../utilities/catchAsync");
 
@@ -91,7 +92,13 @@ const createProduct = catchAsync(async (req, res, next) => {
       message: "product name already exist",
     });
   } else {
-    const newProduct = await productModel.create(req.body);
+    const imagePaths = req.files ? req.files.map((file) => file.path) : [];
+
+    const productData = {
+      ...req.body,
+      images: imagePaths,
+    };
+    const newProduct = await productModel.create(productData);
     res.status(201).json({
       status: "success",
       data: { newProduct },

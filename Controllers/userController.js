@@ -1,12 +1,24 @@
+const { options } = require("../app");
 const userModel = require("../Models/userModel");
 const catchAsync = require("../utilities/catchAsync");
+const bcrypt = require("bcrypt");
+let salt = bcrypt.genSaltSync(10);
+
 const createUser = catchAsync(async (req, res) => {
+
+  const passHashed = await bcrypt.hash(req.body.password, salt);
+
+  // const user = req.body;
+  // console.log(`User:${user}`);
+  // console.log("User:", JSON.stringify(user, null, 2));
+  // // return res.status(200).json({ message: "LOGGED IN successfully" });
+  // return res.status(400).json({ message: "gggggggg" });
   const newUser = await userModel.create({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     email: req.body.email,
     role: req.body.role,
-    password: req.body.password,
+    password: passHashed,
   });
   res.status(200).json({
     status: "success",
@@ -15,7 +27,20 @@ const createUser = catchAsync(async (req, res) => {
 });
 
 const getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await userModel.find({});
+  const queryObj = {};
+  //search
+  if (req.query.name) {
+    queryObj.$or = [
+      { firstName: { $regex: req.query.name, $options: "i" } },
+      { lastName: { $regex: req.query.name, $options: "i" } },
+    ];
+  }
+
+  //filter by role
+  if (req.query.role) {
+    queryObj.role = req.query.role;
+  }
+  const users = await userModel.find(queryObj);
   res.status(200).json({
     status: "success",
     data: { users },

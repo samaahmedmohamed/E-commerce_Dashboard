@@ -1,8 +1,11 @@
 const userModel = require("../Models/userModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+// const dotenv = require("dotenv").config();
+const dotenv = require("dotenv").config();
 
 let login = async (req, res) => {
+  // try {
   let user = req.body;
   //   console.log(`user:${user}`);
   //   console.log(`actual pass:${user.password}`);
@@ -28,13 +31,30 @@ let login = async (req, res) => {
   //   console.log(checkPass);
 
   let token = await jwt.sign(
-    { email: foundUser.email, id: foundUser._id },
-    "samasimooo"
-  );
-  console.log(token);
-  res.header("x-auth-token", token);
+    { email: foundUser.email, id: foundUser._id, role: foundUser.role },
+    // "samasimooo"
+    process.env.JWT_SECRET,
 
-  return res.status(200).json({ message: "LOGGED IN successfully" });
+    { expiresIn: "48h" }
+  );
+  console.log(process.env.JWT_SECRET);
+
+  console.log(token);
+
+  res.status(200).json({
+    status: "success",
+    message: "LOGGED IN successfully",
+    token: token,
+  });
+  // } catch {
+  //   res.status(500).json({
+  //     status: "failed",
+  //     message: "something went wrong",
+  //   });
+  // }
+  // res.header("x-auth-token", token);
+
+  // return res.status(200).json({ message: "LOGGED IN successfully" });
 };
 
 module.exports = login;
