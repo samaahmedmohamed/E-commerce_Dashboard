@@ -9,11 +9,14 @@ const {
   deleteUser,
 } = require("../Controllers/userController");
 
-router.post("/", createUser);
-router.get("/", getAllUsers);
-router.get("/:id", getUser);
-router.patch("/:id", updateUser);
-router.delete("/:id", deleteUser);
+const authorize = require("../middleWares/authorize");
+const authenticate = require("../middleWares/authinticate");
+
+router.post("/", authenticate, authorize("manger"), createUser);
+router.get("/", authenticate, authorize("admin", "manger"), getAllUsers);
+router.get("/:id", authenticate, authorize("admin", "manger"), getUser);
+router.patch("/:id", authenticate, authorize("manger"), updateUser);
+router.delete("/:id", authenticate, authorize("manger"), deleteUser);
 // router.post("/" ,signup)
 // router.post("/")
 module.exports = router;

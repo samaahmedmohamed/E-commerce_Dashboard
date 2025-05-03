@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 
-const userSchema = new mongoose.Schema(
+const adminSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
@@ -14,15 +14,15 @@ const userSchema = new mongoose.Schema(
     phone: {
       type: Number,
     },
-    address: {
-      type: String,
-      validate: {
-        validator: function (v) {
-          return /^01[0-2,5]{1}[0-9]{8}$/.test(v); // Example for Egyptian phone numbers
-        },
-        message: "Please enter a valid phone number!",
-      },
-    },
+    // address: {
+    //   type: String,
+    //   validate: {
+    //     validator: function (v) {
+    //       return /^01[0-2,5]{1}[0-9]{8}$/.test(v); // Example for Egyptian phone numbers
+    //     },
+    //     message: "Please enter a valid phone number!",
+    //   },
+    // },
     email: {
       type: String,
       required: [true, "tell us your email plz !"],
@@ -43,18 +43,11 @@ const userSchema = new mongoose.Schema(
       },
       default: "customer",
     },
-    isActive: {
-      type: Boolean,
-      default: true,
-    },
-    // order:{
-
-    // }
   },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   }
 );
-const User = mongoose.model("users", userSchema);
-module.exports = User;
+const Admin = mongoose.model("admins", adminSchema);
+module.exports = Admin;
