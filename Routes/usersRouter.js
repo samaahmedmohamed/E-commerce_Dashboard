@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const userValidation=require('../middleWares/userMiddelWares');
 // const signup =require("../Controllers/authController")
 const {
   createUser,
@@ -9,10 +10,10 @@ const {
   deleteUser,
 } = require("../Controllers/userController");
 
-router.post("/", createUser);
+router.post("/", userValidation,createUser);
 router.get("/", getAllUsers);
 router.get("/:id", getUser);
-router.patch("/:id", updateUser);
+router.patch("/:id",userValidation, updateUser);
 router.delete("/:id", deleteUser);
 // router.post("/" ,signup)
 // router.post("/")
