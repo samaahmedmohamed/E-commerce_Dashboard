@@ -122,11 +122,13 @@ const createProduct = catchAsync(async (req, res, next) => {
       message: "product name already exist",
     });
   } else {
-    const imagePaths = req.files ? req.files.map((file) => file.path) : [];
+    // const imagePaths = req.files ? req.files.map((file) => file.path) : [];
+    const imagePaths = req.files.map(file => `/images/upload/${file.filename}`);
+
 
     const productData = {
       ...req.body,
-      images: imagePaths,
+      imageUrl: imagePaths,
     };
     const newProduct = await productModel.create(productData);
     res.status(201).json({
