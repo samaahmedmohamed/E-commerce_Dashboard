@@ -16,6 +16,7 @@ const getAllProduct = catchAsync(async (req, res, next) => {
   );
 
   const filter = JSON.parse(queryString);
+  console.log(filter);
 
   ///////filter with gender///////
   if (req.query.gender) {
@@ -24,6 +25,35 @@ const getAllProduct = catchAsync(async (req, res, next) => {
   }
 
   ///// filter with category ////
+  // if (req.query.catigory) {
+  //   // const categoryName =await productModel.find({name:req.query.catigory})
+  //   // if(categoryName){
+  //   //   filter.categoryName=categoryName._id
+  //   // }
+  //   const catigoryArray = req.query.catigory.split(",");
+  //   filter.catigory = { $in: catigoryArray };
+  // }
+  if (req.query.catigory) {
+    const categoryNames = req.query.catigory.split(",");
+
+    // جيب الـ categories اللي اسمهم في الريكوست
+    const categories = await categoryModel.find({
+      name: { $in: categoryNames.map((name) => new RegExp(`^${name}$`, "i")) }, // يدور بدون حساسية لحالة الأحرف
+    });
+
+    // لو مالقاش حاجة خالص
+    if (categories.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No categories found with the given names." });
+    }
+
+    // خُد الـ _id
+    const categoryIds = categories.map((cat) => cat._id);
+
+    // استخدم الـ _id في الفلتر
+    filter.catigory = { $in: categoryIds };
+  }
 
   ///////////////////////////////////
 
