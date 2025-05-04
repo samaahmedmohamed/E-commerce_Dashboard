@@ -16,7 +16,7 @@ app.use("/signup" ,signupRouter);
 app.use("/login", loginRouter);
 app.use("/users",userRoutes);
 app.use("/products",productRoutes);
-app.use("/categorys",categoryRoutes)
+app.use("/categories",categoryRoutes)
 app.use("/admins", adminRoutes);
 app.use("/orders",ordersRoutes);
 
