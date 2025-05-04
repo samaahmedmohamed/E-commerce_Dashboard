@@ -12,16 +12,22 @@ const {
   deleteUser,
 } = require("../Controllers/userController");
 
-router.post("/", authenticate, authorize("manger"), userValidation, createUser);
-router.get("/", authenticate, authorize("admin", "manger"), getAllUsers);
-router.get("/:id", authenticate, authorize("admin", "manger"), getUser);
+router.post(
+  "/",
+  authenticate,
+  authorize(["manger"]),
+  userValidation,
+  createUser
+);
+router.get("/", authenticate, authorize(["manger", "admin"]), getAllUsers);
+router.get("/:id", authenticate, authorize(["admin", "manger"]), getUser);
 router.patch(
   "/:id",
   authenticate,
-  authorize("manger"),
+  authorize(["manger"]),
   userValidation,
   updateUser
 );
-router.delete("/:id", authenticate, authorize("manger"), deleteUser);
+router.delete("/:id", authenticate, authorize(["manger"]), deleteUser);
 
 module.exports = router;
