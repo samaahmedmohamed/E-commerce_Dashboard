@@ -1,35 +1,29 @@
+const { path } = require("../app");
 const productModel = require("../Models/productModel");
 const catchAsync = require("../utilities/catchAsync");
+const categoryModel=require("../Models/category")
 
 const getAllProduct = catchAsync(async (req, res, next) => {
-  //Build Query//
-  const queryObject = { ...req.query };
 
+  const queryObject = { ...req.query };
   const excludedFields = ["page", "limit", "sort", "fields"];
   excludedFields.forEach((el) => delete queryObject[el]);
 
-  ////// filter with price & gender  =====  add $ before (gt|gte|lt|lte)  ///////
+
+
   const queryString = JSON.stringify(queryObject).replace(
     /\b(gt|gte|lt|lte)\b/g,
     (match) => `$${match}`
   );
-
   const filter = JSON.parse(queryString);
 
-  ///////filter with gender///////
   if (req.query.gender) {
     const genderArray = req.query.gender.split(",");
     filter.gender = { $in: genderArray };
   }
 
-  ///// filter with category ////
+  let query = productModel.find(filter).populate("category", "name"); // استخدام populate مع استرجاع اسم الفئة
 
-  ///////////////////////////////////
-
-  ///Buid Query depends on filter //
-  let query = productModel.find(filter);
-
-  ///sort by price | Date ///
   if (req.query.sort) {
     const sortBy = req.query.sort.split(",").join(" ");
     query = query.sort(sortBy);
@@ -37,7 +31,7 @@ const getAllProduct = catchAsync(async (req, res, next) => {
     query = query.sort("-createdAt");
   }
 
-  /// selection by fields //
+
   if (req.query.fields) {
     const fields = req.query.fields.split(",").join(" ");
     query = query.select(fields);
@@ -45,7 +39,7 @@ const getAllProduct = catchAsync(async (req, res, next) => {
     query = query.select("-__v");
   }
 
-  /// pagination ///
+
   const page = Number(req.query.page);
   const limit = Number(req.query.limit);
   const skip = (page - 1) * limit;
@@ -59,9 +53,10 @@ const getAllProduct = catchAsync(async (req, res, next) => {
     }
   }
 
-  /// Execute products ///
+
   let products = await query;
 
+  
   res.status(200).json({
     status: "success",
     results: products.length,
@@ -74,7 +69,7 @@ const getAllProduct = catchAsync(async (req, res, next) => {
 
 const getProduct = catchAsync(async (req, res, next) => {
   const id = req.params.id;
-  const product = await productModel.findById(id);
+  const product = await productModel.findById(id).populate("category","name");
   res.status(200).json({
     status: "success",
     data: { product },
@@ -82,27 +77,56 @@ const getProduct = catchAsync(async (req, res, next) => {
 });
 
 const createProduct = catchAsync(async (req, res, next) => {
-  const exsitingProduct = productModel.findOne({ name: req.body.name });
+  // console.log(req.body.name);
+  const exsitingProduct = await productModel.findOne({ name: req.body.name });
+  console.log(exsitingProduct);
   if (exsitingProduct) {
     res.status(400).json({
       status: "fail",
       message: "product name already exist",
     });
-  } else {
-    const newProduct = await productModel.create(req.body);
+  } 
+  const category=await categoryModel.findOne({name:req.body.category});
+  if(!category){
+    return res.status(404).json({
+      status: "fail",
+      message: "Category not found",
+    });
+
+  }
+    // const imagePaths = req.files ? req.files.map((file) => file.path) : [];
+    const imagePaths = req.files.map(
+      (file) => `/images/upload/${file.filename}`
+    );
+
+    const productData = {
+      ...req.body,
+      category:category._id,
+      images: imagePaths,
+    };
+    const newProduct = (await productModel.create(productData))
     res.status(201).json({
       status: "success",
       data: { newProduct },
     });
-  }
+  
 });
 
 const updateProduct = catchAsync(async (req, res, next) => {
+
+  console.log(req.body);
+  const category=await categoryModel.findOne({name:req.body.category});
+  if(!category){
+    return res.status(404).json({
+      status: "fail",
+      message: "Category not found",
+    });}
+    req.body.category = category._id;
   const updatedProduct = await productModel.findByIdAndUpdate(
     req.params.id,
     req.body,
     { new: true, runValidators: true }
-  );
+  ).populate("category", "name");
   if (!updatedProduct) {
     throw new Error("nothing to update");
   }
@@ -113,7 +137,8 @@ const updateProduct = catchAsync(async (req, res, next) => {
 });
 
 const deleteProduct = catchAsync(async (req, res, next) => {
-  const deletedProduct = await productModel.findByIdAndUpdate(req.body.id, {
+  console.log(req.params.id);
+  const deletedProduct = await productModel.findByIdAndUpdate(req.params.id, {
     isDeleted: true,
     new: true,
   });

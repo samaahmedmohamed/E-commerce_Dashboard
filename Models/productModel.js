@@ -6,36 +6,38 @@ const productModel = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "A product must have a name"],
+      // required: [true, "A product must have a name"],
       trim: true,
     },
     brand: {
       type: String,
-      required: [true, "A brand must have a name"],
+      // required: [true, "A brand must have a name"],
       trim: true,
     },
     price: {
       type: Number,
-      required: [true, "A product must have price"],
+      // required: [true, "A product must have price"],
     },
     description: {
       type: String,
-      required: [true, "A product must have description"],
+      // required: [true, "A product must have description"],
       trim: true,
     },
     color: {
-      type: String,
-      required: [true, "A product must have a color"],
+      type: [String],
+      // required: [true, "A product must have a color"],
+
+
       trim: true,
     },
     material: {
       type: String,
-      required: [true, "A product must have a material"],
+      // required: [true, "A product must have a material"],
       trim: true,
     },
     inStock: {
       type: Number,
-      required: [true, "A product must have a stock"],
+      // required: [true, "A product must have a stock"],
     },
     createdAt: {
       type: Date,
@@ -47,12 +49,12 @@ const productModel = new mongoose.Schema(
         values: ["XS", "S", "M", "L", "XL", "2XL", "3XL"],
         message: `size range must be "XS" , "S" , "M" , "L" , "XL" , "2XL"  or "3XL"`,
       },
-      required: true,
+      // required: true,
     },
     category: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "category",
-      required: true,
+      ref: "Category",
+      // required: true,
     },
     gender: {
       type: [String],
@@ -65,15 +67,15 @@ const productModel = new mongoose.Schema(
           return new Set(value).size === value.length; ///it is comparing not assigning
         },
       },
-      required: true,
+      // required: true,
     },
-    imageUrl: {
+    images: {
       type: [String],
       required: [true, "A product must have image"],
     },
     quantity: {
       type: Number,
-      required: true,
+      // required: true,
     },
     isDeleted: {
       type: Boolean,
