@@ -27,7 +27,6 @@ const productModel = new mongoose.Schema(
       type: [String],
       // required: [true, "A product must have a color"],
 
-
       trim: true,
     },
     material: {

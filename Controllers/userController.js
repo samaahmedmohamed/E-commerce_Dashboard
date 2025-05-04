@@ -39,6 +39,7 @@ const getAllUsers = catchAsync(async (req, res, next) => {
   if (req.query.role) {
     queryObj.role = req.query.role;
   }
+  queryObj.isDeleted = { $ne: true };
   const users = await userModel.find(queryObj);
   res.status(200).json({
     status: "success",
@@ -72,13 +73,19 @@ const updateUser = catchAsync(async (req, res, next) => {
 });
 
 const deleteUser = catchAsync(async (req, res, next) => {
-  const user = await userModel.findByIdAndDelete(req.params.id);
+  // const user = await userModel.findByIdAndDelete(req.params.id);
+  const user = await userModel.findByIdAndUpdate(req.params.id, {
+    isDeleted: true,
+    // runValidators:true
+    new: true,
+  });
   console.log(user);
 
   if (!user) return res.status(400).json({ message: "user is not found" });
   res.status(200).json({
     status: "Success",
-    data: null,
+    message: "product soft deleted succesfully",
+    // data: null,
   });
 });
 
