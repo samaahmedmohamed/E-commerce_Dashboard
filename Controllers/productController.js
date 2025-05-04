@@ -3,64 +3,23 @@ const productModel = require("../Models/productModel");
 const catchAsync = require("../utilities/catchAsync");
 
 const getAllProduct = catchAsync(async (req, res, next) => {
-  //Build Query//
   const queryObject = { ...req.query };
-
   const excludedFields = ["page", "limit", "sort", "fields"];
   excludedFields.forEach((el) => delete queryObject[el]);
 
-  ////// filter with price & gender  =====  add $ before (gt|gte|lt|lte)  ///////
   const queryString = JSON.stringify(queryObject).replace(
     /\b(gt|gte|lt|lte)\b/g,
     (match) => `$${match}`
   );
-
   const filter = JSON.parse(queryString);
-  console.log(filter);
 
-  ///////filter with gender///////
   if (req.query.gender) {
     const genderArray = req.query.gender.split(",");
     filter.gender = { $in: genderArray };
   }
 
-  ///// filter with category ////
-  // if (req.query.catigory) {
-  //   // const categoryName =await productModel.find({name:req.query.catigory})
-  //   // if(categoryName){
-  //   //   filter.categoryName=categoryName._id
-  //   // }
-  //   const catigoryArray = req.query.catigory.split(",");
-  //   filter.catigory = { $in: catigoryArray };
-  // }
-  if (req.query.catigory) {
-    const categoryNames = req.query.catigory.split(",");
+  let query = productModel.find(filter).populate("category", "name"); // استخدام populate مع استرجاع اسم الفئة
 
-    // جيب الـ categories اللي اسمهم في الريكوست
-    const categories = await categoryModel.find({
-      name: { $in: categoryNames.map((name) => new RegExp(`^${name}$`, "i")) }, // يدور بدون حساسية لحالة الأحرف
-    });
-
-    // لو مالقاش حاجة خالص
-    if (categories.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No categories found with the given names." });
-    }
-
-    // خُد الـ _id
-    const categoryIds = categories.map((cat) => cat._id);
-
-    // استخدم الـ _id في الفلتر
-    filter.catigory = { $in: categoryIds };
-  }
-
-  ///////////////////////////////////
-
-  ///Buid Query depends on filter //
-  let query = productModel.find(filter);
-
-  ///sort by price | Date ///
   if (req.query.sort) {
     const sortBy = req.query.sort.split(",").join(" ");
     query = query.sort(sortBy);
@@ -68,7 +27,6 @@ const getAllProduct = catchAsync(async (req, res, next) => {
     query = query.sort("-createdAt");
   }
 
-  /// selection by fields //
   if (req.query.fields) {
     const fields = req.query.fields.split(",").join(" ");
     query = query.select(fields);
@@ -76,7 +34,6 @@ const getAllProduct = catchAsync(async (req, res, next) => {
     query = query.select("-__v");
   }
 
-  /// pagination ///
   const page = Number(req.query.page);
   const limit = Number(req.query.limit);
   const skip = (page - 1) * limit;
@@ -90,7 +47,6 @@ const getAllProduct = catchAsync(async (req, res, next) => {
     }
   }
 
-  /// Execute products ///
   let products = await query;
 
   res.status(200).json({
@@ -102,7 +58,6 @@ const getAllProduct = catchAsync(async (req, res, next) => {
     },
   });
 });
-
 const getProduct = catchAsync(async (req, res, next) => {
   const id = req.params.id;
   const product = await productModel.findById(id);
@@ -123,8 +78,9 @@ const createProduct = catchAsync(async (req, res, next) => {
     });
   } else {
     // const imagePaths = req.files ? req.files.map((file) => file.path) : [];
-    const imagePaths = req.files.map(file => `/images/upload/${file.filename}`);
-
+    const imagePaths = req.files.map(
+      (file) => `/images/upload/${file.filename}`
+    );
 
     const productData = {
       ...req.body,
