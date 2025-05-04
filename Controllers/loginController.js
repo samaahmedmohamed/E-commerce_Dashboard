@@ -1,6 +1,8 @@
 const userModel = require("../Models/userModel");
+const adminModel = require("../Models/adminModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Admin = require("../Models/adminModel");
 // const dotenv = require("dotenv").config();
 const dotenv = require("dotenv").config();
 
@@ -14,6 +16,12 @@ let login = async (req, res) => {
     .findOne({ email: user.email.toLowerCase() })
     .select("+password");
   //   console.log(`incomming pass:${foundUser.password}`);
+
+  if (!foundUser) {
+    foundUser = await adminModel
+      .findOne({ email: user.email.toLowerCase() })
+      .select("+password");
+  }
 
   if (!foundUser)
     return res.status(400).json({ message: "Invalid E-mail/password" });
