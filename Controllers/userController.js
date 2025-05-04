@@ -2,11 +2,10 @@ const { options } = require("../app");
 const userModel = require("../Models/userModel");
 const catchAsync = require("../utilities/catchAsync");
 const bcrypt = require("bcrypt");
-let salt = bcrypt.genSaltSync(10);
+// let salt = bcrypt.genSaltSync(10);
 
 const createUser = catchAsync(async (req, res) => {
-
-  const passHashed = await bcrypt.hash(req.body.password, salt);
+  const passHashed = await bcrypt.hash(req.body.password, 10);
 
   // const user = req.body;
   // console.log(`User:${user}`);

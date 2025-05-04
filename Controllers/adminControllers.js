@@ -2,10 +2,10 @@
 const adminModel = require("../Models/adminModel");
 const catchAsync = require("../utilities/catchAsync");
 const bcrypt = require("bcrypt");
-let salt = bcrypt.genSaltSync(10);
+// let salt = bcrypt.genSaltSync(10);
 
 const createAdmin = catchAsync(async (req, res) => {
-  const passHashed = await bcrypt.hash(req.body.password, salt);
+  const passHashed = await bcrypt.hash(req.body.password, 10);
   const newAdmin = await adminModel.create({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
