@@ -4,12 +4,13 @@ const catchAsync = require("../utilities/catchAsync");
 const categoryModel=require("../Models/category")
 
 const getAllProduct = catchAsync(async (req, res, next) => {
-  
+
   const queryObject = { ...req.query };
   const excludedFields = ["page", "limit", "sort", "fields"];
   excludedFields.forEach((el) => delete queryObject[el]);
 
- 
+
+
   const queryString = JSON.stringify(queryObject).replace(
     /\b(gt|gte|lt|lte)\b/g,
     (match) => `$${match}`
@@ -30,7 +31,7 @@ const getAllProduct = catchAsync(async (req, res, next) => {
     query = query.sort("-createdAt");
   }
 
-  
+
   if (req.query.fields) {
     const fields = req.query.fields.split(",").join(" ");
     query = query.select(fields);
@@ -38,7 +39,7 @@ const getAllProduct = catchAsync(async (req, res, next) => {
     query = query.select("-__v");
   }
 
-  
+
   const page = Number(req.query.page);
   const limit = Number(req.query.limit);
   const skip = (page - 1) * limit;
@@ -52,7 +53,7 @@ const getAllProduct = catchAsync(async (req, res, next) => {
     }
   }
 
-  
+
   let products = await query;
 
   
@@ -65,8 +66,6 @@ const getAllProduct = catchAsync(async (req, res, next) => {
     },
   });
 });
-
-
 
 const getProduct = catchAsync(async (req, res, next) => {
   const id = req.params.id;
@@ -96,8 +95,9 @@ const createProduct = catchAsync(async (req, res, next) => {
 
   }
     // const imagePaths = req.files ? req.files.map((file) => file.path) : [];
-    const imagePaths = req.files.map(file => `/images/upload/${file.filename}`);
-
+    const imagePaths = req.files.map(
+      (file) => `/images/upload/${file.filename}`
+    );
 
     const productData = {
       ...req.body,
