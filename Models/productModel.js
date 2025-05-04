@@ -53,7 +53,7 @@ const productModel = new mongoose.Schema(
     },
     category: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "category",
+      ref: "Category",
       // required: true,
     },
     gender: {
@@ -69,7 +69,7 @@ const productModel = new mongoose.Schema(
       },
       // required: true,
     },
-    imageUrl: {
+    images: {
       type: [String],
       required: [true, "A product must have image"],
     },
