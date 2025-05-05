@@ -43,6 +43,10 @@ const adminSchema = new mongoose.Schema(
       },
       default: "admin",
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     toJSON: { virtuals: true },
