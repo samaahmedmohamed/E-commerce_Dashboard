@@ -36,7 +36,7 @@ const getAllProduct = catchAsync(async (req, res, next) => {
     filter.category = { $in: categoryIds };
   }
 
-  filter.isDeleted = { $ne: true };
+  // filter.isDeleted = { $ne: true };   for show the products which is not soft deleted only
   let query = productModel.find(filter).populate("category", "name");
   if (req.query.sort) {
     const sortBy = req.query.sort.split(",").join(" ");

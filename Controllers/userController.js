@@ -39,7 +39,7 @@ const getAllUsers = catchAsync(async (req, res, next) => {
   if (req.query.role) {
     queryObj.role = req.query.role;
   }
-  queryObj.isDeleted = { $ne: true };
+  // queryObj.isDeleted = { $ne: true };    for show the users which is not soft deleted only
   const users = await userModel.find(queryObj);
   res.status(200).json({
     status: "success",
