@@ -20,7 +20,7 @@ const validateProduct=(product)=>{
         sizeRange:Joi.array().items(Joi.string().min(1).valid("XS", "S", "M", "L", "XL", "2XL", "3XL")).required(),
         gender:Joi.array().items(Joi.string().valid("men", "women")).required(),
         category:Joi.string().required(),
-        images:Joi.array().items(Joi.string()).required,
+        images:Joi.array().items(Joi.string()),
        quantity:Joi.number().min(1).default(1),
     }).unknown(false);
     return Schema.validate(product);
