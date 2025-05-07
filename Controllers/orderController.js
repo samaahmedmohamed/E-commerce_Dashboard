@@ -1,12 +1,13 @@
-
-
 const orderModel = require("../Models/orderModel");
+const productModel = require("../Models/productModel");
+const userModel = require("../Models/userModel");
+
 const catchAsync = require("../utilities/catchAsync");
 
 const getAllOrders = catchAsync(async (req, res) => {
-  const data = await orderModel.find({})
-    .populate("user")
-    .populate("items.product"); 
+  const data = await orderModel.find({});
+  // .populate("user")
+  // .populate("items.product");
 
   res.status(200).json({
     status: "success",
@@ -14,7 +15,6 @@ const getAllOrders = catchAsync(async (req, res) => {
     data,
   });
 });
-
 
 const createOrder = catchAsync(async (req, res) => {
   const itemsWithPrices = await Promise.all(
@@ -28,7 +28,10 @@ const createOrder = catchAsync(async (req, res) => {
       };
     })
   );
-  const orderTotalPrice = itemsWithPrices.reduce((sum, item) => sum + item.totalPrice, 0);
+  const orderTotalPrice = itemsWithPrices.reduce(
+    (sum, item) => sum + item.totalPrice,
+    0
+  );
 
   const order = await orderModel.create({
     ...req.body,
@@ -42,14 +45,13 @@ const createOrder = catchAsync(async (req, res) => {
   });
 });
 const updateOrder = catchAsync(async (req, res) => {
-  const order = await orderModel.findByIdAndUpdate(
-    req.params.id, 
-    req.body,
-    { new: true, runValidators: true }
-  );
+  const order = await orderModel.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
 
   if (!order) {
-    return res.status(400).json({ message: 'Nothing to update' });
+    return res.status(400).json({ message: "Nothing to update" });
   }
 
   res.status(200).json({
