@@ -96,13 +96,13 @@ const createProduct = catchAsync(async (req, res, next) => {
 
   }
     // const imagePaths = req.files ? req.files.map((file) => file.path) : [];
-    const imagePaths = req.files.map(file => `/images/upload/${file.filename}`);
+    // const imagePaths = req.files.map(file => `/images/upload/${file.filename}`);
 
 
     const productData = {
       ...req.body,
       category:category._id,
-      images: imagePaths,
+      // images: imagePaths,
     };
     const newProduct = (await productModel.create(productData))
     res.status(201).json({
