@@ -103,19 +103,21 @@ const createProduct = catchAsync(async (req, res, next) => {
       message: "Category not found",
     });
   }
-  // const imagePaths = req.files ? req.files.map((file) => file.path) : [];
-  const imagePaths = req.files.map((file) => `/images/upload/${file.filename}`);
+    // const imagePaths = req.files ? req.files.map((file) => file.path) : [];
+    // const imagePaths = req.files.map(file => `/images/upload/${file.filename}`);
 
-  const productData = {
-    ...req.body,
-    category: category._id,
-    images: imagePaths,
-  };
-  const newProduct = await productModel.create(productData);
-  res.status(201).json({
-    status: "success",
-    data: { newProduct },
-  });
+
+    const productData = {
+      ...req.body,
+      category:category._id,
+      // images: imagePaths,
+    };
+    const newProduct = (await productModel.create(productData))
+    res.status(201).json({
+      status: "success",
+      data: { newProduct },
+    });
+  
 });
 
 const updateProduct = catchAsync(async (req, res, next) => {
