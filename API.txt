@@ -1,0 +1,49 @@
+Products API :
+1- to get all products 
+http://127.0.0.1:3000/products
+
+IMPORTANT GENDER 
+http://127.0.0.1:3000/products?gender=men
+http://127.0.0.1:3000/products?gender=women
+http://127.0.0.1:3000/products?gender=men,women
+
+
+3- to sort products based on any property
+http://127.0.0.1:3000/products?gender=women&sort=price    - for descending and no - for ascending 
+http://127.0.0.1:3000/products?gender=women&sort=-price,stock    first price then stock
+
+
+4- to get the results of a certian page
+http://127.0.0.1:3000/products?page=2&limit=10     limit is the number of products in every page 
+
+
+5- to delete , update(PATCH) or GET a product
+http://127.0.0.1:3000/products/productID
+
+
+USERS API:
+
+1- to login => send a POST request with the email and password to
+http://127.0.0.1:3000/login 
+
+
+2- to signup => send a POST request with the firstName ,lastName , email , password ,phone , address to
+http://127.0.0.1:3000/signup  
+
+
+3- users routes have the same structure as products but it is restricted to the admin , manger
+http://127.0.0.1:3000/users
+http://127.0.0.1:3000/users/userID
+
+4- admins routes have the same structure as products but it is restricted to the manger
+http://127.0.0.1:3000/admins
+http://127.0.0.1:3000/admins/adminID
+
+
+categories API:
+
+1- to get all categories 
+http://127.0.0.1:3000/categories
+
+2- to delete , update(PATCH) or GET a category
+http://127.0.0.1:3000/categories/categoryID

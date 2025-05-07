@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const productMiddelWares=require('../middleWares/productMiddelWare')
+const productMiddelWares = require("../middleWares/productMiddelWare");
 // const getAllProduct = require("../Controllers/productController");
 // const getProduct = require("../Controllers/productController");
 // const upload = require("../middleWares/uploadImages");
@@ -11,6 +11,9 @@ const {
   updateProduct,
   deleteProduct,
 } = require("../Controllers/productController");
+
+const authorize = require("../middleWares/authorize");
+const authenticate = require("../middleWares/authinticate");
 
 router.get("/", getAllProduct);
 router.get("/:id", getProduct);

@@ -41,7 +41,11 @@ const adminSchema = new mongoose.Schema(
         values: ["customer", "admin", "manger"],
         message: "role should be customer / admin /manger",
       },
-      default: "customer",
+      default: "admin",
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
     },
   },
   {

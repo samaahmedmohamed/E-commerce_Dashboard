@@ -2,10 +2,10 @@
 const adminModel = require("../Models/adminModel");
 const catchAsync = require("../utilities/catchAsync");
 const bcrypt = require("bcrypt");
-let salt = bcrypt.genSaltSync(10);
+// let salt = bcrypt.genSaltSync(10);
 
 const createAdmin = catchAsync(async (req, res) => {
-  const passHashed = await bcrypt.hash(req.body.password, salt);
+  const passHashed = await bcrypt.hash(req.body.password, 10);
   const newAdmin = await adminModel.create({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
@@ -53,13 +53,18 @@ const updateAdmin = catchAsync(async (req, res, next) => {
 });
 
 const deleteAdmin = catchAsync(async (req, res, next) => {
-  const Admin = await adminModel.findByIdAndDelete(req.params.id);
+  // const Admin = await adminModel.findByIdAndDelete(req.params.id);
+  const Admin = await adminModel.findByIdAndUpdate(req.params.id, {
+    isDeleted: true,
+    new: true,
+  });
   console.log(Admin);
 
   if (!Admin) return res.status(400).json({ message: "Admin is not found" });
   res.status(200).json({
     status: "Success",
-    data: null,
+    message: "admin soft deleted successfully",
+    // data: null,
   });
 });
 

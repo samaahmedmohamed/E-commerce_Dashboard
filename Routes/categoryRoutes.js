@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const categoryMiddelWare=require('../middleWares/categoreyMiddelWare');
+const categoryMiddelWare = require("../middleWares/categoreyMiddelWare");
 const {
   getAllCategory,
   getCategory,
@@ -9,9 +9,29 @@ const {
   deleteCategory,
 } = require("../Controllers/categoryController");
 
-router.get("/", getAllCategory);
-router.get("/:id", getCategory);
-router.post("/", categoryMiddelWare,createCategory);
-router.patch("/:id",categoryMiddelWare, updateCategory);
-router.delete("/:id", deleteCategory);
+const authorize = require("../middleWares/authorize");
+const authenticate = require("../middleWares/authinticate");
+
+router.get("/", authenticate, authorize(["manger", "admin"]), getAllCategory);
+router.get("/:id", authenticate, authorize(["manger", "admin"]), getCategory);
+router.post(
+  "/",
+  authenticate,
+  authorize(["manger", "admin"]),
+  categoryMiddelWare,
+  createCategory
+);
+router.patch(
+  "/:id",
+  authenticate,
+  authorize(["manger", "admin"]),
+  categoryMiddelWare,
+  updateCategory
+);
+router.delete(
+  "/:id",
+  authenticate,
+  authorize(["manger", "admin"]),
+  deleteCategory
+);
 module.exports = router;

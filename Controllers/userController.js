@@ -2,11 +2,10 @@ const { options } = require("../app");
 const userModel = require("../Models/userModel");
 const catchAsync = require("../utilities/catchAsync");
 const bcrypt = require("bcrypt");
-let salt = bcrypt.genSaltSync(10);
+// let salt = bcrypt.genSaltSync(10);
 
 const createUser = catchAsync(async (req, res) => {
-
-  const passHashed = await bcrypt.hash(req.body.password, salt);
+  const passHashed = await bcrypt.hash(req.body.password, 10);
 
   // const user = req.body;
   // console.log(`User:${user}`);
@@ -40,6 +39,7 @@ const getAllUsers = catchAsync(async (req, res, next) => {
   if (req.query.role) {
     queryObj.role = req.query.role;
   }
+  // queryObj.isDeleted = { $ne: true };    for show the users which is not soft deleted only
   const users = await userModel.find(queryObj);
   res.status(200).json({
     status: "success",
@@ -73,13 +73,19 @@ const updateUser = catchAsync(async (req, res, next) => {
 });
 
 const deleteUser = catchAsync(async (req, res, next) => {
-  const user = await userModel.findByIdAndDelete(req.params.id);
+  // const user = await userModel.findByIdAndDelete(req.params.id);
+  const user = await userModel.findByIdAndUpdate(req.params.id, {
+    isDeleted: true,
+    // runValidators:true
+    new: true,
+  });
   console.log(user);
 
   if (!user) return res.status(400).json({ message: "user is not found" });
   res.status(200).json({
     status: "Success",
-    data: null,
+    message: "product soft deleted succesfully",
+    // data: null,
   });
 });
 
