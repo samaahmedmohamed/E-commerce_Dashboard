@@ -53,6 +53,7 @@ let login = async (req, res) => {
     status: "success",
     message: "LOGGED IN successfully",
     token: token,
+    role:foundUser.role
   });
   // } catch {
   //   res.status(500).json({
