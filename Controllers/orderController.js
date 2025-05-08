@@ -18,13 +18,38 @@ const getAllOrders = catchAsync(async (req, res) => {
 });
 
 
+// const createOrder = catchAsync(async (req, res) => {
+//   const itemsWithPrices = await Promise.all(
+//     req.body.items.map(async (item) => {
+//       console.log(item.product);
+//       const productId = new mongoose.Types.ObjectId(item.product);
+//       const product = await productModel.findById(productId);
+//       console.log("Product found:", product);
+//       const itemTotal = product.price * item.quantity;
+
+//       return {
+//         ...item,
+//         totalPrice: itemTotal,
+//       };
+//     })
+//   );
+//   const orderTotalPrice = itemsWithPrices.reduce((sum, item) => sum + item.totalPrice, 0);
+
+//   const order = await orderModel.create({
+//     ...req.body,
+//     items: itemsWithPrices,
+//     totalPrice: orderTotalPrice,
+//   });
+
+//   res.status(200).json({
+//     status: "success",
+//     results: order,
+//   });
+// });
 const createOrder = catchAsync(async (req, res) => {
   const itemsWithPrices = await Promise.all(
     req.body.items.map(async (item) => {
-      console.log(item.product);
-      const productId = new mongoose.Types.ObjectId(item.product);
-      const product = await productModel.findById(productId);
-      console.log("Product found:", product);
+      const product = await productModel.findById(item.product);
       const itemTotal = product.price * item.quantity;
 
       return {
@@ -33,7 +58,10 @@ const createOrder = catchAsync(async (req, res) => {
       };
     })
   );
-  const orderTotalPrice = itemsWithPrices.reduce((sum, item) => sum + item.totalPrice, 0);
+  const orderTotalPrice = itemsWithPrices.reduce(
+    (sum, item) => sum + item.totalPrice,
+    0
+  );
 
   const order = await orderModel.create({
     ...req.body,

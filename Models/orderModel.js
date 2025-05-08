@@ -10,7 +10,7 @@ const orderModel = new mongoose.Schema(
     },
     items: [
       {
-        product: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+        product: { type: mongoose.Schema.Types.ObjectId, ref: "product" },
         quantity: { type: Number, default: 1 },
         totalPrice: Number,
         size: String,
