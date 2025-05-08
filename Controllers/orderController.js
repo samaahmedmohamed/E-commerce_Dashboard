@@ -1,6 +1,8 @@
 
+const mongoose = require('mongoose');
 
 const orderModel = require("../Models/orderModel");
+const productModel=require('../Models/orderModel')
 const catchAsync = require("../utilities/catchAsync");
 
 const getAllOrders = catchAsync(async (req, res) => {
@@ -19,7 +21,10 @@ const getAllOrders = catchAsync(async (req, res) => {
 const createOrder = catchAsync(async (req, res) => {
   const itemsWithPrices = await Promise.all(
     req.body.items.map(async (item) => {
-      const product = await productModel.findById(item.product);
+      console.log(item.product);
+      const productId = new mongoose.Types.ObjectId(item.product);
+      const product = await productModel.findById(productId);
+      console.log("Product found:", product);
       const itemTotal = product.price * item.quantity;
 
       return {
