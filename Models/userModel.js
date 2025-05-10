@@ -60,7 +60,7 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: Date.now(),
     },
-
+  },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
@@ -69,9 +69,9 @@ const userSchema = new mongoose.Schema(
 
 // 👉 إضافة الـ virtual
 userSchema.virtual("orders", {
-  ref: "Order",             // اسم الموديل اللي هنعمله populate
-  foreignField: "user",     // الحقل الموجود في order بيربطه باليوزر
-  localField: "_id",        // الحقل الموجود في اليوزر
+  ref: "Order", // اسم الموديل اللي هنعمله populate
+  foreignField: "user", // الحقل الموجود في order بيربطه باليوزر
+  localField: "_id", // الحقل الموجود في اليوزر
 });
 
 const User = mongoose.model("users", userSchema);
