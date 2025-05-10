@@ -4,6 +4,7 @@ const userModel = require("../Models/userModel");
 const mongoose = require("mongoose");
 
 const catchAsync = require("../utilities/catchAsync");
+const updateUserStatus = require("../middleWares/updateUserStatus");
 const order = require("../Models/orderModel");
 
 const getAllOrders = catchAsync(async (req, res) => {
@@ -17,8 +18,8 @@ const getAllOrders = catchAsync(async (req, res) => {
 
   const data = await orderModel
     .find(filter)
-    .skip((page - 1) * limit)
-    .limit(parseInt(limit))
+    // .skip((page - 1) * limit)
+    // .limit(parseInt(limit))
     .populate("user")
     .populate("items.product");
   //orders.length
@@ -56,8 +57,8 @@ const getAllOrders = catchAsync(async (req, res) => {
     newCustomers: newCustomers,
     newProduct: newProduct,
     newOrder: newOrder,
-    page,
-    limit,
+    // page,
+    // limit,
     data,
   });
 });
@@ -88,6 +89,8 @@ const createOrder = catchAsync(async (req, res) => {
     items: itemsWithPrices,
     totalPriceOrder: orderTotalPrice,
   });
+  await updateUserStatus(order.user);
+  // console.log(order.user);
 
   res.status(200).json({
     status: "success",

@@ -39,10 +39,12 @@ const getAllUsers = catchAsync(async (req, res, next) => {
   if (req.query.role) {
     queryObj.role = req.query.role;
   }
+  const userCount = await userModel.countDocuments();
   // queryObj.isDeleted = { $ne: true };    for show the users which is not soft deleted only
   const users = await userModel.find(queryObj);
   res.status(200).json({
     status: "success",
+    userCount: userCount,
     data: { users },
   });
 });
@@ -56,7 +58,11 @@ const getUser = catchAsync(async (req, res, next) => {
   }
   res.status(200).json({
     status: "success",
-    data: { user },
+    data: {
+      user,
+      isActive: user.isActive,
+      isVip: user.isVip,
+    },
   });
 });
 
