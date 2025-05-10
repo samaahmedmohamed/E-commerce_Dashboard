@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: [true, "please enter 8 digits !"],
       minLength: 8,
-      select: false, //to prevent auto return of password
+      select: false,
     },
     role: {
       type: String,
@@ -60,14 +60,19 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: Date.now(),
     },
-    // order:{
 
-    // }
-  },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   }
 );
+
+// 👉 إضافة الـ virtual
+userSchema.virtual("orders", {
+  ref: "Order",             // اسم الموديل اللي هنعمله populate
+  foreignField: "user",     // الحقل الموجود في order بيربطه باليوزر
+  localField: "_id",        // الحقل الموجود في اليوزر
+});
+
 const User = mongoose.model("users", userSchema);
 module.exports = User;

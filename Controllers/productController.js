@@ -129,6 +129,7 @@ const updateProduct = catchAsync(async (req, res, next) => {
       message: "Category not found",
     });
   }
+  
   req.body.category = category._id;
   const updatedProduct = await productModel
     .findByIdAndUpdate(req.params.id, req.body, {

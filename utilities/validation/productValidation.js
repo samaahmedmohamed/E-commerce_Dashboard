@@ -10,7 +10,7 @@ const validateProduct=(product)=>{
         brand: Joi.string().pattern(/^(?!\d+$).+/).required().messages({
             "string.pattern.base": "brand must not be only numbers",
           }),
-        price:Joi.number().min(0).required(),
+         price:Joi.number().min(0).required(),
         description:Joi.string(),
         color:Joi.array().items(Joi.string().regex(/^\D+$/).min(1)).required().messages({
             "string.pattern.base": "color must be string",
