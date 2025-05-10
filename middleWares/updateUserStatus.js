@@ -6,9 +6,14 @@ const updateUserStatus = async (id) => {
   const orderCount = await orderModel.countDocuments({ user: id });
   console.log(`User ${id} has ${orderCount} orders`);
 
+  let status = "inactive";
+
+  if (orderCount > 0) {
+    status = orderCount >= 2 ? "vip" : "active";
+  }
+
   await userModel.findByIdAndUpdate(id, {
-    isActive: orderCount > 0,
-    isVip: orderCount > 2,
+    status: status,
   });
 };
 
