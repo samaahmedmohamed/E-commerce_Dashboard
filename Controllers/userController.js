@@ -1,7 +1,9 @@
 const { options } = require("../app");
 const userModel = require("../Models/userModel");
+const adminModel = require("../Models/adminModel");
 const catchAsync = require("../utilities/catchAsync");
 const bcrypt = require("bcrypt");
+const { date } = require("joi");
 // let salt = bcrypt.genSaltSync(10);
 
 const createUser = catchAsync(async (req, res) => {
@@ -83,14 +85,47 @@ const getUser = catchAsync(async (req, res, next) => {
 });
 
 const updateUser = catchAsync(async (req, res, next) => {
+  const userBeforeUpdate = await userModel
+    .findById(req.params.id)
+    .select("+password");
+  if (!userBeforeUpdate)
+    return res.status(404).json({ message: "user not found" });
   const user = await userModel.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
   });
   if (!user) return res.status(400).json({ message: "nothing to update" });
+
+  if (req.body.role == "admin" && userBeforeUpdate.role !== "admin") {
+    const existingAdmin = await adminModel.findOne({ email: req.body.email });
+    if (existingAdmin) {
+      return res.status(400).json({
+        status: "fail",
+        message: "An admin with this email already exists.",
+      });
+    }
+    const newAdmin = await adminModel.create({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      email: req.body.email,
+      password: userBeforeUpdate.password,
+      // ...user,
+      role: "admin",
+    });
+
+    await userModel.findByIdAndDelete(req.params.id);
+
+    return res.status(200).json({
+      status: "success",
+      date: { newAdmin },
+      message: "admin added successfully",
+    });
+  }
+
   res.status(200).json({
     status: "success",
     data: { user },
+    message: "user updated successfully",
   });
 });
 

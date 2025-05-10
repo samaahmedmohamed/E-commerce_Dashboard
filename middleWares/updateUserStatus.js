@@ -9,7 +9,7 @@ const updateUserStatus = async (id) => {
   let status = "inactive";
 
   if (orderCount > 0) {
-    status = orderCount >= 10 ? "vip" : "active";
+    status = orderCount >= 2 ? "vip" : "active";
   }
 
   await userModel.findByIdAndUpdate(id, {
