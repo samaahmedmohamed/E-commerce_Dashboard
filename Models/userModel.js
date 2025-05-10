@@ -44,14 +44,21 @@ const userSchema = new mongoose.Schema(
       },
       default: "customer",
     },
-    isActive: {
-      type: Boolean,
-      default: false,
+    status: {
+      type: String,
+      enum: ["active", "inactive", "vip"],
+      default: "inactive",
     },
-    isVip: {
-      type: Boolean,
-      default: false,
-    },
+    // isActive: {
+    //   type: Boolean,
+    //   // default: false,
+    //   enum: ["active", "inactive"],
+    //   default: "inactive",
+    // },
+    // isVip: {
+    //   type: Boolean,
+    //   default: false,
+    // },
     isDeleted: {
       type: Boolean,
       default: false,

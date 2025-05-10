@@ -8,7 +8,7 @@ const validateUser = (user) => {
       .required()
       .messages({ "string.pattern.base": "Email must be a valid format" }),
     password: Joi.string().min(8).required(),
-    // role: Joi.string().valid('customer', 'admin', 'manger')
+    role: Joi.string().valid("customer", "admin", "manger"),
   }).unknown(false);
   return Schema.validate(user);
 };

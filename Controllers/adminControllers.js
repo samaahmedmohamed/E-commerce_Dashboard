@@ -20,7 +20,7 @@ const createAdmin = catchAsync(async (req, res) => {
 });
 
 const getAllAdmins = catchAsync(async (req, res, next) => {
-  const Admins = await adminModel.find({});
+  const Admins = await adminModel.find({ role: "admin" });
   res.status(200).json({
     status: "success",
     data: { Admins },
