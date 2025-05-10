@@ -16,7 +16,11 @@ const orderModel = new mongoose.Schema(
         color: String,
       },
     ],
-    totalPriceOrder: Number,
+// <<<<<<< sama
+    totalPriceOrder: { type: Number },
+// =======
+//     totalPriceOrder: Number,
+// >>>>>>> develop
     status: {
       type: String,
       enum: ["pending", "shipping", "Delivered", "Cancelled"],

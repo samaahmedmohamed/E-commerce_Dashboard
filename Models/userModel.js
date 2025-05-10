@@ -46,13 +46,21 @@ const userSchema = new mongoose.Schema(
     },
     isActive: {
       type: Boolean,
-      default: true,
+      default: false,
+    },
+    isVip: {
+      type: Boolean,
+      default: false,
     },
     isDeleted: {
       type: Boolean,
       default: false,
     },
-  },
+    createdAt: {
+      type: Date,
+      default: Date.now(),
+    },
+
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
