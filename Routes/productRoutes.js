@@ -17,8 +17,8 @@ const authenticate = require("../middleWares/authinticate");
 
 router.get("/", getAllProduct);
 router.get("/:id", getProduct);
-router.post("/",productMiddelWares, createProduct);
-router.patch("/:id", productMiddelWares,updateProduct);
+router.post("/", productMiddelWares, createProduct);
+router.patch("/:id", productMiddelWares, updateProduct);
 router.delete("/:id", deleteProduct);
 
 module.exports = router;

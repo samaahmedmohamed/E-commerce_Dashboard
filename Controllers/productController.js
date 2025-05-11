@@ -66,10 +66,20 @@ const getAllProduct = catchAsync(async (req, res, next) => {
   }
   // query.isDeleted = { $ne: true };
   let products = await query;
+  const totalProducts = await productModel.countDocuments();
+  const existingProduct = await productModel.countDocuments({
+    isDeleted: false,
+  });
+  const deletedProduct = await productModel.countDocuments({
+    isDeleted: true,
+  });
 
   res.status(200).json({
     status: "success",
-    results: products.length,
+    totalProducts: totalProducts,
+    existingProduct: existingProduct,
+    deletedProduct: deletedProduct,
+    // results: products.length,
     numProducts,
     data: {
       products,
@@ -103,21 +113,19 @@ const createProduct = catchAsync(async (req, res, next) => {
       message: "Category not found",
     });
   }
-    // const imagePaths = req.files ? req.files.map((file) => file.path) : [];
-    // const imagePaths = req.files.map(file => `/images/upload/${file.filename}`);
+  // const imagePaths = req.files ? req.files.map((file) => file.path) : [];
+  // const imagePaths = req.files.map(file => `/images/upload/${file.filename}`);
 
-
-    const productData = {
-      ...req.body,
-      category:category._id,
-      // images: imagePaths,
-    };
-    const newProduct = (await productModel.create(productData))
-    res.status(201).json({
-      status: "success",
-      data: { newProduct },
-    });
-  
+  const productData = {
+    ...req.body,
+    category: category._id,
+    // images: imagePaths,
+  };
+  const newProduct = await productModel.create(productData);
+  res.status(201).json({
+    status: "success",
+    data: { newProduct },
+  });
 });
 
 const updateProduct = catchAsync(async (req, res, next) => {
@@ -129,7 +137,7 @@ const updateProduct = catchAsync(async (req, res, next) => {
       message: "Category not found",
     });
   }
-  
+
   req.body.category = category._id;
   const updatedProduct = await productModel
     .findByIdAndUpdate(req.params.id, req.body, {
