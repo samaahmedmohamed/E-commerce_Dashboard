@@ -52,6 +52,13 @@ const getAllOrders = catchAsync(async (req, res) => {
     // status: { enum: ["pending", "shipping", "Delivered"] },
   });
 
+  ////////
+  const userCount = await userModel.countDocuments();
+  const userActive = await userModel.countDocuments({ status: "active" });
+  const userInActive = await userModel.countDocuments({ status: "inactive" });
+  const userVip = await userModel.countDocuments({ status: "vip" });
+  /////////
+
   res.status(200).json({
     status: "success",
     results: data.length,
@@ -61,6 +68,10 @@ const getAllOrders = catchAsync(async (req, res) => {
     newCustomers: newCustomers,
     newProduct: newProduct,
     newOrder: newOrder,
+    userCount: userCount,
+    userActive: userActive,
+    userInActive: userInActive,
+    userVip: userVip,
     // page,
     // limit,
     data,
