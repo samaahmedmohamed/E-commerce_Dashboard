@@ -38,14 +38,17 @@ const getAllOrders = catchAsync(async (req, res) => {
 
   const newCustomers = await userModel.countDocuments({
     createdAt: { $gte: weekAgo, $lte: new Date() },
+    isDeleted: false,
   });
 
   const newProduct = await productModel.countDocuments({
     createdAt: { $gte: weekAgo, $lte: new Date() },
+    isDeleted: false,
   });
 
   const newOrder = await orderModel.countDocuments({
     createdAt: { $gte: weekAgo, $lte: new Date() },
+    // status: { enum: ["pending", "shipping", "Delivered"] },
   });
 
   res.status(200).json({
