@@ -1,6 +1,9 @@
 const { options } = require("../app");
 const userModel = require("../Models/userModel");
 const adminModel = require("../Models/adminModel");
+const productModel = require("../Models/productModel");
+const orderModel = require("../Models/orderModel");
+
 const catchAsync = require("../utilities/catchAsync");
 const bcrypt = require("bcrypt");
 const { date } = require("joi");
@@ -55,12 +58,53 @@ const getAllUsers = catchAsync(async (req, res, next) => {
   const userVip = await userModel.countDocuments({ status: "vip" });
   // queryObj.isDeleted = { $ne: true };    for show the users which is not soft deleted only
   const users = await userModel.find(queryObj).populate("orders");
+
+  //////////////////////////
+  //  const data = await orderModel
+  //     .find(filter)
+  //     // .skip((page - 1) * limit)
+  //     // .limit(parseInt(limit))
+  //     .populate("user")
+  //     .populate("items.product");
+  //   //orders.length
+  //   const NumberOfOrders = await orderModel.countDocuments(filter);
+  //   //total revenue --- total orders price
+  //   const totalRevenue = data.reduce((acc, item) => {
+  //     // sum = +item.totalPriceOrder;
+  //     return acc + +item.totalPriceOrder || 0;
+  //   }, 0);
+
+  //   //average order value
+  //   avg_order_value = totalRevenue / NumberOfOrders;
+
+  // NEW Customers / Products /Orders
+  const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+  const newCustomers = await userModel.countDocuments({
+    createdAt: { $gte: weekAgo, $lte: new Date() },
+    isDeleted: false,
+  });
+
+  const newProduct = await productModel.countDocuments({
+    createdAt: { $gte: weekAgo, $lte: new Date() },
+    isDeleted: false,
+  });
+
+  const newOrder = await orderModel.countDocuments({
+    createdAt: { $gte: weekAgo, $lte: new Date() },
+    status: { $ne: "Cancelled" },
+    // status: { enum: ["pending", "shipping", "Delivered"] },
+  });
+
   res.status(200).json({
     status: "success",
     userCount: userCount,
     userActive: userActive,
     userInActive: userInActive,
     userVip: userVip,
+    newCustomers: newCustomers,
+    newProduct: newProduct,
+    newOrder: newOrder,
     data: { users },
   });
 });
