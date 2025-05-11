@@ -48,6 +48,7 @@ const getAllOrders = catchAsync(async (req, res) => {
 
   const newOrder = await orderModel.countDocuments({
     createdAt: { $gte: weekAgo, $lte: new Date() },
+    status: { $ne: "Cancelled" },
     // status: { enum: ["pending", "shipping", "Delivered"] },
   });
 
