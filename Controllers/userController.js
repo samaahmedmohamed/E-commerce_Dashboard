@@ -19,6 +19,8 @@ const createUser = catchAsync(async (req, res) => {
   const newUser = await userModel.create({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
+    phone: req.body.phone,
+    address: req.body.address,
     email: req.body.email,
     role: req.body.role,
     password: passHashed,
@@ -38,6 +40,9 @@ const getAllUsers = catchAsync(async (req, res, next) => {
       { firstName: { $regex: req.query.name, $options: "i" } },
       { lastName: { $regex: req.query.name, $options: "i" } },
     ];
+  }
+  if (req.query.status) {
+    queryObj.status = req.query.status;
   }
 
   //filter by role

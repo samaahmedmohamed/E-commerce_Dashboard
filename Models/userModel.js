@@ -17,12 +17,12 @@ const userSchema = new mongoose.Schema(
     },
     address: {
       type: String,
-      validate: {
-        validator: function (v) {
-          return /^01[0-2,5]{1}[0-9]{8}$/.test(v); // Example for Egyptian phone numbers
-        },
-        message: "Please enter a valid phone number!",
-      },
+      // validate: {
+      //   // validator: function (v) {
+      //   //   return /^01[0-2,5]{1}[0-9]{8}$/.test(v); // Example for Egyptian phone numbers
+      //   // },
+      //   // message: "Please enter a valid phone number!",
+      // },
     },
     email: {
       type: String,

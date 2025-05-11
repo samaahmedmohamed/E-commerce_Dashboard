@@ -3,6 +3,8 @@ const validateUser = (user) => {
   const Schema = Joi.object({
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
+    phone: Joi.string().required(),
+    address: Joi.string().required(),
     email: Joi.string()
       .pattern(/^[\w.-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/)
       .required()
