@@ -45,11 +45,17 @@ const getAllUsers = catchAsync(async (req, res, next) => {
     queryObj.role = req.query.role;
   }
   const userCount = await userModel.countDocuments();
+  const userActive = await userModel.countDocuments({ status: "active" });
+  const userInActive = await userModel.countDocuments({ status: "inactive" });
+  const userVip = await userModel.countDocuments({ status: "vip" });
   // queryObj.isDeleted = { $ne: true };    for show the users which is not soft deleted only
   const users = await userModel.find(queryObj).populate("orders");
   res.status(200).json({
     status: "success",
     userCount: userCount,
+    userActive: userActive,
+    userInActive: userInActive,
+    userVip: userVip,
     data: { users },
   });
 });
